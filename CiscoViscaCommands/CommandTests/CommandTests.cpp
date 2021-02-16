@@ -23,8 +23,9 @@ namespace CommandTests
 			std::cout << "First element: " << onOffArray[0];
 
 			Logger::WriteMessage("Assert elements in returned array");
-			Assert::IsTrue(onOffArray[0] == 0x01, L"First element");
-			Assert::IsTrue(onOffArray[1] == 0x33, L"Seconds element");
+			Assert::IsTrue(onOffArray[0] == 0x81, L"First element");
+			Assert::IsTrue(onOffArray[1] == 0x01, L"Seconds element");
+			Assert::IsTrue(size == 7);
 		}
 	};
 }

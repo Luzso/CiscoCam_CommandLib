@@ -27,5 +27,26 @@ namespace CommandTests
 			Assert::IsTrue(onOffArray[1] == 0x01, L"Seconds element");
 			Assert::IsTrue(size == 7);
 		}
+
+		TEST_METHOD(TestResetPos) {
+			byte* arrayOut = NULL;
+			int size = cisco_commands::resetPos(&arrayOut);
+
+			Assert::IsTrue(size == 5);
+		}
+
+		TEST_METHOD(TestPanSpeed) {
+
+			// Pan left
+			byte* arrayOut = NULL;
+			int size = cisco_commands::moveStart(pan_mode::left, tilt_mode::none, 5, 0, &arrayOut);
+
+			Assert::IsTrue(arrayOut[6] == 0x01); // Pan left
+			Assert::IsTrue(arrayOut[7] == 0x03); // No tilt
+			Assert::IsTrue(arrayOut[4] == 0x05); // Pan speed 5
+			Assert::IsTrue(arrayOut[5] == 0x00); // Tilt speed 0
+
+		}
+
 	};
 }

@@ -1,9 +1,9 @@
 #pragma once
 
 
+using byte = unsigned char;
 namespace cisco_commands {
 
-	using byte = unsigned char;
 
 	enum class power_led : byte {
 		off,
@@ -42,15 +42,15 @@ namespace cisco_commands {
 
 	int completeCommand(byte* commandBytes, int nCommandBytes, byte** arrayOut);
 
-
 	/// <summary>
 	/// Turn the power light on the camera on or off.
 	/// </summary>
 	/// <param name="on"></param>
 	/// <param name="arrayOut"></param>
 	/// <returns></returns>
-	int setPowerLED(power_led state, byte** arrayOut) {
-		static byte powerLight[] = { 0x01, 0x01, 0x33, 0x02, (unsigned char)state };
+	static int setPowerLED(power_led state, byte** arrayOut) {
+		static byte powerLight[] = { 0x01, 0x33, 0x02, 0xff };
+		powerLight[3] = (byte)state;
 		static const int commandSize = sizeof(powerLight);
 
 		return completeCommand(powerLight, commandSize, arrayOut);
@@ -63,8 +63,9 @@ namespace cisco_commands {
 	/// <param name="state"></param>
 	/// <param name="arrayOut"></param>
 	/// <returns></returns>
-	int setCallLED(call_led state, byte** arrayOut) {
-		static byte callLight[] = { 0x01, 0x01, 0x33, 0x01, (unsigned char)state };
+	static int setCallLED(call_led state, byte** arrayOut) {
+		static byte callLight[] = {  0x01, 0x33, 0x01, 0xff};
+		callLight[3] = (byte)state;
 		static const int commandSize = sizeof(callLight);
 
 		return completeCommand(callLight, commandSize, arrayOut);
@@ -76,8 +77,9 @@ namespace cisco_commands {
 	/// <param name="state"></param>
 	/// <param name="arrayOut"></param>
 	/// <returns></returns>
-	int mirrorCam(bool state, byte** arrayOut) {
-		static byte mirror[] = { 0x01, 0x04, 0x33, 0x01 + (int)state };
+	static int mirrorCam(bool state, byte** arrayOut) {
+		static byte mirror[] = { 0x01, 0x04, 0x33, 0xff};
+		mirror[3] = 0x01 + (int)state;
 		static const int commandSize = sizeof(mirror);
 
 		return completeCommand(mirror, commandSize, arrayOut);
@@ -98,7 +100,8 @@ namespace cisco_commands {
 		if (speed > maxSpeed)
 			speed = maxSpeed;
 
-		static byte zoom[] = { 0x01, 0x04, 0x07, (byte)zoomMode + speed };
+		static byte zoom[] = { 0x01, 0x04, 0x07, 0xff};
+		zoom[3] = (byte)zoomMode + speed;
 		static const int commandSize = sizeof(zoom);
 
 		return completeCommand(zoom, commandSize, arrayOut);
@@ -114,7 +117,8 @@ namespace cisco_commands {
 		if (speed > maxSpeed)
 			speed = maxSpeed;
 
-		static byte focus[] = { 0x01, 0x04, 0x08, (byte)focusMode + speed };
+		static byte focus[] = { 0x01, 0x04, 0x08, 0xff};
+		focus[3] = (byte)focusMode + speed;
 		static const int commandSize = sizeof(focus);
 
 		return completeCommand(focus, commandSize, arrayOut);
@@ -157,7 +161,9 @@ namespace cisco_commands {
 		if (tiltSpeed > maxTiltSpeed)
 			tiltSpeed = maxTiltSpeed;
 
-		static byte move[] = { 0x01, 0x06, 0x01, (byte)panSpeed, (byte)tiltSpeed, (byte)panMode, (byte)tiltMode };
+		static byte move[] = { 0x01, 0x06, 0x01, 0xff, 0xff, 0xff, 0xff };
+
+		move[3] = (byte)panSpeed; move[4] = (byte)tiltSpeed; move[5] = (byte)panMode; move[6] = (byte)tiltMode;
 		static const int commandSize = sizeof(move);
 
 		return completeCommand(move, commandSize, arrayOut);
